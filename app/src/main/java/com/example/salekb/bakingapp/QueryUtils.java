@@ -114,7 +114,7 @@ public class QueryUtils {
         Log.i(LOG_TAG, "extractRecipeFromJson is initiated");
 
         try {
-            JSONArray baseJsonResponses = new JSONArray();
+            JSONArray baseJsonResponses = new JSONArray(recipeJSON);
 
             for (int i=0; i<baseJsonResponses.length(); i++) {
                 JSONObject currentItem = baseJsonResponses.getJSONObject(i);
@@ -141,6 +141,8 @@ public class QueryUtils {
                  String thumbnailURL = step.getString("thumbnailURL");
                  }
                  **/
+
+                Log.v(LOG_TAG, "recipe arraylist: " + name + " - " + servings);
                 recipeArrayList.add(new Recipe(name, servings));
             }
         } catch (JSONException e) {
