@@ -28,9 +28,11 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recipe_recyclerView"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent" />
+    <ListView
+        android:id="@+id/recipe_listView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </ListView>
 
 </android.support.constraint.ConstraintLayout>

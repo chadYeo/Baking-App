@@ -2,63 +2,56 @@ package com.example.salekb.bakingapp;
 
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder> {
+public class RecipeAdapter extends ArrayAdapter<Recipe> {
+
+    public RecipeAdapter(Context context, List<Recipe> objects) {
+        super(context, 0, objects);
+    }
 
     private static final String LOG_TAG = RecipeAdapter.class.getSimpleName();
 
-    private List<Recipe> recipeList;
+    private List<Recipe> recipeList = new ArrayList<Recipe>();
 
-    public RecipeAdapter(List<Recipe> recipes) {
-        this.recipeList = recipes;
+    static class ViewHolder {
+        TextView mNameTextView;
+        TextView mServingTetView;
     }
 
     @Override
-    public RecipeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
-        Context context = parent.getContext();
-        View itemView = LayoutInflater.from(context).inflate(R.layout.recipe_item, parent, false);
-        RecipeViewHolder recipeViewHolder = new RecipeViewHolder(itemView);
-
-        return recipeViewHolder;
-    }
-
-    @Override
-    public void onBindViewHolder(RecipeViewHolder holder, int position) {
-        final  Recipe recipe = recipeList.get(position);
-        holder.mNameTextView.setText(recipe.getName());
-        holder.mServingTextView.setText(recipe.getServings());
-
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                // TODO: Create Recipe Detail and set onClickListener
-            }
-        });
-    }
-
-    @Override
-    public int getItemCount() {
-        return recipeList.size();
-    }
-
-    public static class RecipeViewHolder extends RecyclerView.ViewHolder {
-
-        public TextView mNameTextView;
-        public TextView mServingTextView;
-
-        public RecipeViewHolder(View itemView) {
-            super(itemView);
-            this.mNameTextView = (TextView) itemView.findViewById(R.id.name);
-            this.mServingTextView = (TextView) itemView.findViewById(R.id.serving);
+    public View getView(int position, View convertView, ViewGroup parent) {
+        if (convertView == null) {
+            convertView = LayoutInflater.from(getContext()).inflate(
+                    R.layout.recipe_item, parent, false);
         }
+
+        Recipe currentPosition = getItem(position);
+
+        ViewHolder viewHolder = new ViewHolder();
+
+        viewHolder.mNameTextView = (TextView) convertView.findViewById(R.id.name);
+        String name = currentPosition.getName();
+        viewHolder.mNameTextView.setText(name);
+
+        viewHolder.mServingTetView = (TextView) convertView.findViewById(R.id.serving);
+        String serving = String.valueOf(currentPosition.getServings());
+        viewHolder.mServingTetView.setText(serving);
+
+        return convertView;
+    }
+
+    public void setRecipe(List<Recipe> data) {
+        recipeList.addAll(data);
+        notifyDataSetChanged();
     }
 }

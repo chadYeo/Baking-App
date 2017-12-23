@@ -1,6 +1,7 @@
 package com.example.salekb.bakingapp;
 
 import android.app.LoaderManager;
+import android.content.Intent;
 import android.content.Loader;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -10,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -25,8 +27,7 @@ public class MainActivity extends AppCompatActivity
     private ProgressBar mProgressBar;
     private RecipeAdapter mAdapter;
     private TextView mEmptyTextView;
-    private RecyclerView mRecyclerView;
-    private RecyclerView.LayoutManager mLayoutManager;
+    private ListView mListView;
 
     private static final int RECIPE_LOADER_ID = 1;
 
@@ -42,14 +43,18 @@ public class MainActivity extends AppCompatActivity
 
         mEmptyTextView = (TextView) findViewById(R.id.empty_textView);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.recipe_recyclerView);
-        mRecyclerView.setHasFixedSize(true);
+        mListView = (ListView) findViewById(R.id.recipe_listView);
 
-        mLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(mLayoutManager);
+        mAdapter = new RecipeAdapter(this, new ArrayList<Recipe>());
+        mListView.setAdapter(mAdapter);
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                //ToDo - Intent to DetailActivity and startActivity
+                Recipe currentRecipe = mAdapter.getItem(position);
 
-        mAdapter = new RecipeAdapter(new ArrayList<Recipe>());
-        mRecyclerView.setAdapter(mAdapter);
+            }
+        });
 
         ConnectivityManager cm = (ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = cm.getActiveNetworkInfo();
@@ -73,17 +78,21 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onLoadFinished(Loader<List<Recipe>> loader, List<Recipe> recipes) {
+    public void onLoadFinished(Loader<List<Recipe>> loader, List<Recipe> data) {
         mProgressBar.setVisibility(View.GONE);
 
-        if (recipes != null && !recipes.isEmpty()) {
+        mAdapter.clear();
+
+        if (data != null && !data.isEmpty()) {
             mEmptyTextView.setVisibility(View.GONE);
+            mAdapter.addAll(data);
         }
         Log.v(LOG_TAG, "onLoadFinished is initiated");
     }
 
     @Override
     public void onLoaderReset(Loader<List<Recipe>> loader) {
+        mAdapter.clear();
         Log.v(LOG_TAG, "onLoaderReset is initiated");
     }
 }
