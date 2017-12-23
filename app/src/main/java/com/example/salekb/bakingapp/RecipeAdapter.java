@@ -1,20 +1,55 @@
 package com.example.salekb.bakingapp;
 
 
-import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class RecipeAdapter extends ArrayAdapter<Recipe> {
+public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeViewHolder> {
 
+    public ArrayList<Recipe> recipes;
+    public RecipeAdapter (ArrayList<Recipe> recipeArrayList) {
+        this.recipes = recipeArrayList;
+    }
+
+    @Override
+    public RecipeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View listItem = LayoutInflater.from(parent.getContext()).inflate(R.layout.recipe_item, parent, false);
+        return new RecipeViewHolder(listItem);
+    }
+
+    @Override
+    public void onBindViewHolder(RecipeViewHolder holder, int position) {
+
+        String name = recipes.get(position).getName();
+        String serving = String.valueOf(recipes.get(position).getServings());
+
+        holder.mNameTextView.setText(name);
+        holder.mServingTextView.setText(serving);
+    }
+
+    @Override
+    public int getItemCount() {
+        return recipes.size();
+    }
+
+    public static class RecipeViewHolder extends RecyclerView.ViewHolder {
+
+        private TextView mNameTextView;
+        private TextView mServingTextView;
+
+        public RecipeViewHolder(View itemView) {
+            super(itemView);
+            mNameTextView = (TextView)itemView.findViewById(R.id.name);
+            mServingTextView = (TextView)itemView.findViewById(R.id.serving);
+        }
+    }
+
+    /**
     public RecipeAdapter(Context context, List<Recipe> objects) {
         super(context, 0, objects);
     }
@@ -25,7 +60,7 @@ public class RecipeAdapter extends ArrayAdapter<Recipe> {
 
     static class ViewHolder {
         TextView mNameTextView;
-        TextView mServingTetView;
+        TextView mServingTextView;
     }
 
     @Override
@@ -49,9 +84,5 @@ public class RecipeAdapter extends ArrayAdapter<Recipe> {
 
         return convertView;
     }
-
-    public void setRecipe(List<Recipe> data) {
-        recipeList.addAll(data);
-        notifyDataSetChanged();
-    }
+    **/
 }

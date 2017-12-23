@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity
     private ProgressBar mProgressBar;
     private RecipeAdapter mAdapter;
     private TextView mEmptyTextView;
-    private ListView mListView;
+    private RecyclerView mRecyclerView;
 
     private static final int RECIPE_LOADER_ID = 1;
 
@@ -43,18 +43,15 @@ public class MainActivity extends AppCompatActivity
 
         mEmptyTextView = (TextView) findViewById(R.id.empty_textView);
 
-        mListView = (ListView) findViewById(R.id.recipe_listView);
+        mRecyclerView = (RecyclerView) findViewById(R.id.mainActivity_recyclerView);
+        mRecyclerView.setHasFixedSize(true);
 
-        mAdapter = new RecipeAdapter(this, new ArrayList<Recipe>());
-        mListView.setAdapter(mAdapter);
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                //ToDo - Intent to DetailActivity and startActivity
-                Recipe currentRecipe = mAdapter.getItem(position);
-
-            }
-        });
+        mAdapter = new RecipeAdapter(new ArrayList<Recipe>());
+        mRecyclerView.setAdapter(mAdapter);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setHasFixedSize(true);
 
         ConnectivityManager cm = (ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = cm.getActiveNetworkInfo();
@@ -81,18 +78,17 @@ public class MainActivity extends AppCompatActivity
     public void onLoadFinished(Loader<List<Recipe>> loader, List<Recipe> data) {
         mProgressBar.setVisibility(View.GONE);
 
-        mAdapter.clear();
-
         if (data != null && !data.isEmpty()) {
             mEmptyTextView.setVisibility(View.GONE);
-            mAdapter.addAll(data);
+            mAdapter.recipes.addAll(data);
+            mRecyclerView.setAdapter(mAdapter);
         }
-        Log.v(LOG_TAG, "onLoadFinished is initiated");
+        Log.v(LOG_TAG, "onLoadFinished is initiated: " + data.get(0).getName().toString());
     }
 
     @Override
     public void onLoaderReset(Loader<List<Recipe>> loader) {
-        mAdapter.clear();
+        mAdapter.recipes.clear();
         Log.v(LOG_TAG, "onLoaderReset is initiated");
     }
 }
