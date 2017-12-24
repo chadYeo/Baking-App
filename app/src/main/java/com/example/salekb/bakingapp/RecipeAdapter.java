@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -17,15 +18,16 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
     }
 
     @Override
-    public RecipeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecipeViewHolder onCreateViewHolder(final ViewGroup parent, int viewType) {
         View listItem = LayoutInflater.from(parent.getContext()).inflate(R.layout.recipe_item, parent, false);
+
         return new RecipeViewHolder(listItem);
     }
 
     @Override
     public void onBindViewHolder(RecipeViewHolder holder, int position) {
 
-        String name = recipes.get(position).getName();
+        final String name = recipes.get(position).getName();
         String serving = String.valueOf(recipes.get(position).getServings());
 
         holder.mNameTextView.setText(name);
