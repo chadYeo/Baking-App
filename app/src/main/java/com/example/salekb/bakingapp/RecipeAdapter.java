@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -32,6 +31,9 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
 
         holder.mNameTextView.setText(name);
         holder.mServingTextView.setText(serving);
+        holder.itemView.setClickable(true);
+        holder.itemView.setFocusable(true);
+        holder.itemView.setFocusableInTouchMode(true);
     }
 
     @Override
