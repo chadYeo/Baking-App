@@ -1,24 +1,21 @@
 package com.example.salekb.bakingapp;
 
 import android.app.LoaderManager;
-import android.content.Context;
-import android.content.Intent;
 import android.content.Loader;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.example.salekb.bakingapp.recipe.Recipe;
+import com.example.salekb.bakingapp.recipe.RecipeAdapter;
+import com.example.salekb.bakingapp.recipe.RecipeLoader;
 
 import java.util.ArrayList;
 import java.util.List;

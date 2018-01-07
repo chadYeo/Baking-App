@@ -1,11 +1,9 @@
-package com.example.salekb.bakingapp;
+package com.example.salekb.bakingapp.recipe;
 
 
 public class Recipe {
     private String mName;
     private int mServings;
-    //private int mQuantity;
-    //private String mIngredient;
     //private String mShortDescription;
     //private String mDescription;
     //private String mVideoURL;

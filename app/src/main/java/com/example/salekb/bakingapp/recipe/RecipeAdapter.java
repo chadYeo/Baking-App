@@ -1,16 +1,16 @@
-package com.example.salekb.bakingapp;
+package com.example.salekb.bakingapp.recipe;
 
 
-import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.example.salekb.bakingapp.DetailActivity;
+import com.example.salekb.bakingapp.R;
 
 import java.util.ArrayList;
 
@@ -65,40 +65,4 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.RecipeView
         }
     }
 
-    /**
-    public RecipeAdapter(Context context, List<Recipe> objects) {
-        super(context, 0, objects);
-    }
-
-    private static final String LOG_TAG = RecipeAdapter.class.getSimpleName();
-
-    private List<Recipe> recipeList = new ArrayList<Recipe>();
-
-    static class ViewHolder {
-        TextView mNameTextView;
-        TextView mServingTextView;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(
-                    R.layout.recipe_item, parent, false);
-        }
-
-        Recipe currentPosition = getItem(position);
-
-        ViewHolder viewHolder = new ViewHolder();
-
-        viewHolder.mNameTextView = (TextView) convertView.findViewById(R.id.name);
-        String name = currentPosition.getName();
-        viewHolder.mNameTextView.setText(name);
-
-        viewHolder.mServingTetView = (TextView) convertView.findViewById(R.id.serving);
-        String serving = String.valueOf(currentPosition.getServings());
-        viewHolder.mServingTetView.setText(serving);
-
-        return convertView;
-    }
-    **/
 }

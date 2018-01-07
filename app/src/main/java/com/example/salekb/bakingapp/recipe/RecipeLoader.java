@@ -1,9 +1,11 @@
-package com.example.salekb.bakingapp;
+package com.example.salekb.bakingapp.recipe;
 
 
 import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.util.Log;
+
+import com.example.salekb.bakingapp.QueryUtils;
 
 import java.util.List;
 
@@ -35,6 +37,4 @@ public class RecipeLoader extends AsyncTaskLoader<List<Recipe>> {
 
         return recipes;
     }
-
-
 }
