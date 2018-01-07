@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onLoaderReset(Loader<List<Recipe>> loader) {
-        mAdapter.recipes.clear();
+        loader.reset();
         Log.v(LOG_TAG, "onLoaderReset is initiated");
     }
 }
