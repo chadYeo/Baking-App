@@ -14,10 +14,12 @@ public class IngredientLoader extends AsyncTaskLoader<List<Ingredient>> {
     private static final String LOG_TAG = IngredientLoader.class.getSimpleName();
 
     private String mUrl;
+    private int mItemPosition;
 
-    public IngredientLoader(Context context, String url) {
+    public IngredientLoader(Context context, String url, int itemPosition) {
         super(context);
         mUrl = url;
+        mItemPosition = itemPosition;
     }
 
     @Override
@@ -31,7 +33,7 @@ public class IngredientLoader extends AsyncTaskLoader<List<Ingredient>> {
             return null;
         }
 
-        List<Ingredient> ingredients = QueryUtils.fetchIngredientData(mUrl);
+        List<Ingredient> ingredients = QueryUtils.fetchIngredientData(mUrl, mItemPosition);
 
         Log.v(LOG_TAG, "loadInbackground is initiated");
 

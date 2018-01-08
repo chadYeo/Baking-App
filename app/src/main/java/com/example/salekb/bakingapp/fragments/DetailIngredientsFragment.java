@@ -69,10 +69,6 @@ public class DetailIngredientsFragment extends Fragment
             LoaderManager loaderManager = getActivity().getLoaderManager();
             loaderManager.initLoader(INGREDIENTS_LOADER_ID, null, this);
 
-            //LoaderManager loaderManager = getLoaderManager();
-            //loaderManager.initLoader(RECIPE_LOADER_ID, null, this);
-
-            //getActivity().getSupportLoaderManager().initLoader(INGREDIENTS_LOADER_ID, null, this);
             Log.v(LOG_TAG, "loadermanager.initLoader is initiated");
         } else {
             mProgressBar.setVisibility(View.GONE);
@@ -84,8 +80,13 @@ public class DetailIngredientsFragment extends Fragment
     @Override
     public Loader<List<Ingredient>> onCreateLoader(int i, Bundle bundle) {
         Log.v(LOG_TAG, "onCreateLoader is initiated");
-
-        return new IngredientLoader(getContext(), url);
+        Bundle extras = getActivity().getIntent().getExtras();
+        int position = 0;
+        if (extras != null) {
+            position = extras.getInt("position");
+            Log.v(LOG_TAG, "onCreateLoader with item position: " + position);
+        }
+        return new IngredientLoader(getContext(), url, position);
     }
 
     @Override

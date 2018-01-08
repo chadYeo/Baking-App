@@ -107,7 +107,7 @@ public class QueryUtils {
         return recipeArrayList;
     }
 
-    public static List<Ingredient> fetchIngredientData(String requestUrl) {
+    public static List<Ingredient> fetchIngredientData(String requestUrl, int position) {
         URL url = createUrl(requestUrl);
         String jsonResponse = "";
         try {
@@ -116,7 +116,7 @@ public class QueryUtils {
             e.printStackTrace();
         }
 
-        ArrayList<Ingredient> ingredientArrayList = extractIngredientsFromJson(jsonResponse);
+        ArrayList<Ingredient> ingredientArrayList = extractIngredientsFromJson(jsonResponse, position);
 
         Log.i(LOG_TAG, "fetching ingredient data: " + url);
 
@@ -150,7 +150,7 @@ public class QueryUtils {
         return recipeArrayList;
     }
 
-    private static ArrayList<Ingredient> extractIngredientsFromJson(String ingredientJSON) {
+    private static ArrayList<Ingredient> extractIngredientsFromJson(String ingredientJSON, int position) {
         if (TextUtils.isEmpty(ingredientJSON)) {
             return null;
         }
@@ -161,29 +161,14 @@ public class QueryUtils {
 
         try {
             JSONArray baseJsonResponses = new JSONArray(ingredientJSON);
-
-            for (int i=0; i<baseJsonResponses.length(); i++) {
-                JSONObject currentItem = baseJsonResponses.getJSONObject(i);
-
-                 JSONArray ingredients = currentItem.getJSONArray("ingredients");
-                 for (int j=0; j<ingredients.length(); j++) {
-                    JSONObject currentIngredient = ingredients.getJSONObject(j);
-                    int quantity = currentIngredient.getInt("quantity");
-                    String measure = currentIngredient.getString("measure");
-                    String ingredient = currentIngredient.getString("ingredient");
-                    ingredientArrayList.add(new Ingredient(quantity, measure, ingredient));
-                 }
-
-                 /**
-                 JSONArray steps = currentItem.getJSONArray("steps");
-                 for (int k=0; k<steps.length(); k++) {
-                 JSONObject step = steps.getJSONObject(k);
-                    String shortDescription = step.getString("shortDescription"):
-                    String description = step.getString("description");
-                    String videoURL = step.getString("videoURL");
-                    String thumbnailURL = step.getString("thumbnailURL");
-                 }
-                  **/
+            JSONObject currentItem = baseJsonResponses.getJSONObject(position);
+            JSONArray ingredients = currentItem.getJSONArray("ingredients");
+            for (int i=0; i<ingredients.length(); i++) {
+                JSONObject ingredientStep = ingredients.getJSONObject(i);
+                int quantity = ingredientStep.getInt("quantity");
+                String measure = ingredientStep.getString("measure");
+                String ingredient = ingredientStep.getString("ingredient");
+                ingredientArrayList.add(new Ingredient(quantity, measure, ingredient));
             }
         } catch (JSONException e) {
             e.printStackTrace();
