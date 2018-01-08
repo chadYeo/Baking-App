@@ -11,7 +11,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.example.salekb.bakingapp.R;
 import com.example.salekb.bakingapp.recipe.Recipe;
@@ -38,8 +37,6 @@ public class DetailViewFragment extends Fragment implements LoaderManager.Loader
         mRecipeIngredientsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getContext(), "Testing", Toast.LENGTH_SHORT).show();
-
                 FragmentManager fragmentManager = getFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 DetailIngredientsFragment detailIngredientsFragment = new DetailIngredientsFragment();

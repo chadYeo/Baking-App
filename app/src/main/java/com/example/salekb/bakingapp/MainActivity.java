@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity
 
         if (data != null && !data.isEmpty()) {
             mEmptyTextView.setVisibility(View.GONE);
+            mAdapter.recipes.clear();
             mAdapter.recipes.addAll(data);
             mRecyclerView.setAdapter(mAdapter);
         }
