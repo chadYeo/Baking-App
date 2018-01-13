@@ -1,20 +1,21 @@
 package com.example.salekb.bakingapp;
 
 import android.app.LoaderManager;
-import android.content.Intent;
 import android.content.Loader;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.example.salekb.bakingapp.recipe.Recipe;
+import com.example.salekb.bakingapp.recipe.RecipeAdapter;
+import com.example.salekb.bakingapp.recipe.RecipeLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,7 @@ public class MainActivity extends AppCompatActivity
     private ProgressBar mProgressBar;
     private RecipeAdapter mAdapter;
     private TextView mEmptyTextView;
-    private ListView mListView;
+    private RecyclerView mRecyclerView;
 
     private static final int RECIPE_LOADER_ID = 1;
 
@@ -43,18 +44,14 @@ public class MainActivity extends AppCompatActivity
 
         mEmptyTextView = (TextView) findViewById(R.id.empty_textView);
 
-        mListView = (ListView) findViewById(R.id.recipe_listView);
+        mRecyclerView = (RecyclerView) findViewById(R.id.mainActivity_recyclerView);
+        mRecyclerView.setHasFixedSize(true);
 
-        mAdapter = new RecipeAdapter(this, new ArrayList<Recipe>());
-        mListView.setAdapter(mAdapter);
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                //ToDo - Intent to DetailActivity and startActivity
-                Recipe currentRecipe = mAdapter.getItem(position);
-
-            }
-        });
+        mAdapter = new RecipeAdapter(new ArrayList<Recipe>());
+        mRecyclerView.setAdapter(mAdapter);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        mRecyclerView.setLayoutManager(layoutManager);
 
         ConnectivityManager cm = (ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = cm.getActiveNetworkInfo();
@@ -81,18 +78,18 @@ public class MainActivity extends AppCompatActivity
     public void onLoadFinished(Loader<List<Recipe>> loader, List<Recipe> data) {
         mProgressBar.setVisibility(View.GONE);
 
-        mAdapter.clear();
-
         if (data != null && !data.isEmpty()) {
             mEmptyTextView.setVisibility(View.GONE);
-            mAdapter.addAll(data);
+            mAdapter.recipes.clear();
+            mAdapter.recipes.addAll(data);
+            mRecyclerView.setAdapter(mAdapter);
         }
-        Log.v(LOG_TAG, "onLoadFinished is initiated");
+        Log.v(LOG_TAG, "onLoadFinished is initiated: " + data.get(0).getName().toString());
     }
 
     @Override
     public void onLoaderReset(Loader<List<Recipe>> loader) {
-        mAdapter.clear();
+        loader.reset();
         Log.v(LOG_TAG, "onLoaderReset is initiated");
     }
 }

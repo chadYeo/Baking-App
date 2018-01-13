@@ -4,6 +4,9 @@ package com.example.salekb.bakingapp;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.example.salekb.bakingapp.ingredient.Ingredient;
+import com.example.salekb.bakingapp.recipe.Recipe;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -104,6 +107,22 @@ public class QueryUtils {
         return recipeArrayList;
     }
 
+    public static List<Ingredient> fetchIngredientData(String requestUrl, int position) {
+        URL url = createUrl(requestUrl);
+        String jsonResponse = "";
+        try {
+            jsonResponse = makeHttpRequest(url);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        ArrayList<Ingredient> ingredientArrayList = extractIngredientsFromJson(jsonResponse, position);
+
+        Log.i(LOG_TAG, "fetching ingredient data: " + url);
+
+        return ingredientArrayList;
+    }
+
     private static ArrayList<Recipe> extractRecipeFromJson(String recipeJSON) {
         if (TextUtils.isEmpty(recipeJSON)) {
             return null;
@@ -122,26 +141,6 @@ public class QueryUtils {
                 String name = currentItem.getString("name");;
                 int servings = currentItem.getInt("servings");
 
-                /**
-                 JSONArray ingredients = currentItem.getJSONArray("ingredients");
-                 for (int j=0; j<ingredients.length(); j++) {
-                 JSONObject currentIngredient = ingredients.getJSONObject(j);
-                 int quantity = currentIngredient.getInt("quantity");
-                 String measure = currentIngredient.getString("measure");
-                 String ingredient = currentIngredient.getString("ingredient");
-                 ingredientsArrayList.add(quantity, measure, ingredient);
-                 }
-
-                 JSONArray steps = currentItem.getJSONArray("steps");
-                 for (int k=0; k<steps.length(); k++) {
-                 JSONObject step = steps.getJSONObject(k);
-                 String shortDescription = step.getString("shortDescription"):
-                 String description = step.getString("description");
-                 String videoURL = step.getString("videoURL");
-                 String thumbnailURL = step.getString("thumbnailURL");
-                 }
-                 **/
-
                 Log.v(LOG_TAG, "recipe arraylist: " + name + " - " + servings);
                 recipeArrayList.add(new Recipe(name, servings));
             }
@@ -149,5 +148,31 @@ public class QueryUtils {
             e.printStackTrace();
         }
         return recipeArrayList;
+    }
+
+    private static ArrayList<Ingredient> extractIngredientsFromJson(String ingredientJSON, int position) {
+        if (TextUtils.isEmpty(ingredientJSON)) {
+            return null;
+        }
+
+        ArrayList<Ingredient> ingredientArrayList = new ArrayList<>();
+
+        Log.i(LOG_TAG, "extractIngredientsFromJson is initiated");
+
+        try {
+            JSONArray baseJsonResponses = new JSONArray(ingredientJSON);
+            JSONObject currentItem = baseJsonResponses.getJSONObject(position);
+            JSONArray ingredients = currentItem.getJSONArray("ingredients");
+            for (int i=0; i<ingredients.length(); i++) {
+                JSONObject ingredientStep = ingredients.getJSONObject(i);
+                int quantity = ingredientStep.getInt("quantity");
+                String measure = ingredientStep.getString("measure");
+                String ingredient = ingredientStep.getString("ingredient");
+                ingredientArrayList.add(new Ingredient(quantity, measure, ingredient));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return ingredientArrayList;
     }
 }
