@@ -135,6 +135,8 @@ public class QueryUtils {
 
         ArrayList<Steps> stepsArrayList = extractStepsFromJson(jsonResponse, position);
 
+        Log.i(LOG_TAG, "fetching steps data: " + url);
+
         return stepsArrayList;
     }
 

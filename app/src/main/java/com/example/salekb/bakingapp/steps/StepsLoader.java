@@ -23,15 +23,22 @@ public class StepsLoader extends AsyncTaskLoader<List<Steps>> {
     }
 
     @Override
+    protected void onStartLoading() {
+        forceLoad();
+    }
+
+    @Override
     public List<Steps> loadInBackground() {
+
+        Log.v(LOG_TAG, "Steps loadInbackground is initiated");
+
         if (mUrl == null) {
             return null;
         }
 
         List<Steps> steps = QueryUtils.fetchStepsData(mUrl, mItemPosition);
 
-        Log.v(LOG_TAG, "loadInbackground is initiated");
-
         return steps;
     }
 }
+

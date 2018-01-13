@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +22,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.salekb.bakingapp.R;
-import com.example.salekb.bakingapp.recipe.Recipe;
 import com.example.salekb.bakingapp.steps.Steps;
 import com.example.salekb.bakingapp.steps.StepsAdapter;
 import com.example.salekb.bakingapp.steps.StepsLoader;
@@ -32,9 +32,10 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DetailViewFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Steps>> {
+public class DetailViewFragment extends Fragment
+        implements LoaderManager.LoaderCallbacks<List<Steps>> {
 
-    private static final int DETAILVIEW_LOADER_ID = 1;
+    private static final int DETAILVIEW_LOADER_ID = 3835;
     private Button mRecipeIngredientsButton;
     private ProgressBar mProgressbar;
     private TextView mEmptyTextView;
@@ -54,7 +55,13 @@ public class DetailViewFragment extends Fragment implements LoaderManager.Loader
 
         mProgressbar = (ProgressBar) view.findViewById(R.id.detail_progressBar);
         mEmptyTextView = (TextView) view.findViewById(R.id.detail_empty_textView);
+
+        mStepsRecyclerView = (RecyclerView) view.findViewById(R.id.detailView_steps_recyclerView);
+        mStepsRecyclerView.setHasFixedSize(true);
+
         mStepsAdapter = new StepsAdapter(new ArrayList<Steps>());
+        mStepsRecyclerView.setAdapter(mStepsAdapter);
+
         mRecipeIngredientsButton = (Button) view.findViewById(R.id.recipe_ingredients_button);
 
         mRecipeIngredientsButton.setOnClickListener(new View.OnClickListener() {
@@ -67,10 +74,6 @@ public class DetailViewFragment extends Fragment implements LoaderManager.Loader
                 fragmentTransaction.commit();
             }
         });
-
-        mStepsRecyclerView = (RecyclerView) view.findViewById(R.id.detailView_steps_recyclerView);
-        mStepsRecyclerView.setHasFixedSize(true);
-        mStepsRecyclerView.setAdapter(mStepsAdapter);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -88,7 +91,6 @@ public class DetailViewFragment extends Fragment implements LoaderManager.Loader
             mProgressbar.setVisibility(View.GONE);
             mEmptyTextView.setText(R.string.no_internet_connection);
         }
-
         return view;
     }
 
@@ -111,8 +113,8 @@ public class DetailViewFragment extends Fragment implements LoaderManager.Loader
         if (data != null && !data.isEmpty()) {
             mEmptyTextView.setVisibility(View.GONE);
             mStepsAdapter.steps.addAll(data);
+            mStepsRecyclerView.setAdapter(mStepsAdapter);
         }
-        Log.v(LOG_TAG, "onLoadFinished is initiated: " + data.get(0).getShortDescription().toString());
     }
 
     @Override
