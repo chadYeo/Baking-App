@@ -12,7 +12,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -71,6 +70,7 @@ public class DetailViewFragment extends Fragment
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 DetailIngredientsFragment detailIngredientsFragment = new DetailIngredientsFragment();
                 fragmentTransaction.replace(R.id.detail_fragment_container, detailIngredientsFragment);
+                fragmentTransaction.addToBackStack("A_B_TAG");
                 fragmentTransaction.commit();
             }
         });
