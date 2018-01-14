@@ -23,6 +23,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginBottom="8dp"
+                android:textColor="@android:color/black"
                 android:text="Recipe: " />
 
             <TextView
@@ -35,6 +36,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_toEndOf="@+id/recipe_label"
                 android:layout_toRightOf="@+id/recipe_label"
+                android:textColor="@android:color/black"
                 android:text="cookie" />
 
             <TextView
@@ -46,6 +48,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_below="@+id/recipe_label"
+                android:textColor="@android:color/black"
                 android:text="Serving: " />
 
             <TextView
@@ -58,6 +61,7 @@
                 android:layout_alignBottom="@+id/serving_label"
                 android:layout_toEndOf="@+id/serving_label"
                 android:layout_toRightOf="@+id/serving_label"
+                android:textColor="@android:color/black"
                 android:text="1000" />
 
         </RelativeLayout>

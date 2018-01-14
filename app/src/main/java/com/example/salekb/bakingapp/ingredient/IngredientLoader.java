@@ -29,13 +29,14 @@ public class IngredientLoader extends AsyncTaskLoader<List<Ingredient>> {
 
     @Override
     public List<Ingredient> loadInBackground() {
+
+        Log.v(LOG_TAG, "loadInbackground is initiated");
+
         if (mUrl == null) {
             return null;
         }
 
         List<Ingredient> ingredients = QueryUtils.fetchIngredientData(mUrl, mItemPosition);
-
-        Log.v(LOG_TAG, "loadInbackground is initiated");
 
         return ingredients;
     }

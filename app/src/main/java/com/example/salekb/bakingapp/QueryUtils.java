@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.example.salekb.bakingapp.ingredient.Ingredient;
 import com.example.salekb.bakingapp.recipe.Recipe;
+import com.example.salekb.bakingapp.steps.Steps;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -123,6 +124,22 @@ public class QueryUtils {
         return ingredientArrayList;
     }
 
+    public static List<Steps> fetchStepsData(String requestUrl, int position) {
+        URL url = createUrl(requestUrl);
+        String jsonResponse = "";
+        try {
+            jsonResponse = makeHttpRequest(url);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        ArrayList<Steps> stepsArrayList = extractStepsFromJson(jsonResponse, position);
+
+        Log.i(LOG_TAG, "fetching steps data: " + url);
+
+        return stepsArrayList;
+    }
+
     private static ArrayList<Recipe> extractRecipeFromJson(String recipeJSON) {
         if (TextUtils.isEmpty(recipeJSON)) {
             return null;
@@ -174,5 +191,32 @@ public class QueryUtils {
             e.printStackTrace();
         }
         return ingredientArrayList;
+    }
+
+    private static ArrayList<Steps> extractStepsFromJson(String stepsJSON, int position) {
+        if (TextUtils.isEmpty(stepsJSON)) {
+            return null;
+        }
+
+        ArrayList<Steps> stepsArrayList = new ArrayList<>();
+
+        Log.i(LOG_TAG, "extractStepsFromJson is initiated");
+
+        try {
+            JSONArray baseJsonResponses = new JSONArray(stepsJSON);
+            JSONObject currentItem = baseJsonResponses.getJSONObject(position);
+            JSONArray steps = currentItem.getJSONArray("steps");
+            for (int i=0; i<steps.length(); i++) {
+                JSONObject recipeStep = steps.getJSONObject(i);
+                String shortDescription = recipeStep.getString("shortDescription");
+                String description = recipeStep.getString("description");
+                String videoURL = recipeStep.getString("videoURL");
+                String thumbnailURL = recipeStep.getString("thumbnailURL");
+                stepsArrayList.add(new Steps(shortDescription, description, videoURL, thumbnailURL));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return stepsArrayList;
     }
 }
