@@ -15,9 +15,11 @@ public class DetailActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            if (getSupportFragmentManager().findFragmentByTag("A_B_TAG") != null) {
-                getSupportFragmentManager().popBackStack("A_B_TAG", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            if (getSupportFragmentManager().findFragmentByTag("Ingredient_Detail_TAG") != null) {
+                getSupportFragmentManager().popBackStack("Ingredient_Detail_TAG", FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 return true;
+            } else if (getSupportFragmentManager().findFragmentByTag("Steps_Detail_TAG") != null){
+                getSupportFragmentManager().popBackStack("Steps_Detail_TAG", FragmentManager.POP_BACK_STACK_INCLUSIVE);
             } else {
                 super.onBackPressed();
                 return true;
@@ -45,9 +47,10 @@ public class DetailActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (getSupportFragmentManager().findFragmentByTag("A_B_TAG") != null) {
-            getSupportFragmentManager().popBackStack("A_B_TAG",
-                    FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        if (getSupportFragmentManager().findFragmentByTag("Ingredient_Detail_TAG") != null) {
+            getSupportFragmentManager().popBackStack("Ingredient_Detail_TAG", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        } else if (getSupportFragmentManager().findFragmentByTag("Steps_Detail_TAG") != null){
+            getSupportFragmentManager().popBackStack("Steps_Detail_TAG", FragmentManager.POP_BACK_STACK_INCLUSIVE);
         } else {
             super.onBackPressed();
         }

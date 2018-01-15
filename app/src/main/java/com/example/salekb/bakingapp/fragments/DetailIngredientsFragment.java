@@ -46,6 +46,7 @@ public class DetailIngredientsFragment extends Fragment
     public DetailIngredientsFragment() {
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -108,6 +109,4 @@ public class DetailIngredientsFragment extends Fragment
         loader.reset();
         Log.v(LOG_TAG, "onLoaderReset is initiated");
     }
-
-
 }

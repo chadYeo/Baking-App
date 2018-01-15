@@ -70,7 +70,7 @@ public class DetailViewFragment extends Fragment
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 DetailIngredientsFragment detailIngredientsFragment = new DetailIngredientsFragment();
                 fragmentTransaction.replace(R.id.detail_fragment_container, detailIngredientsFragment);
-                fragmentTransaction.addToBackStack("A_B_TAG");
+                fragmentTransaction.addToBackStack("Ingredient_Detail_TAG");
                 fragmentTransaction.commit();
             }
         });

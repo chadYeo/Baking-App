@@ -1,7 +1,9 @@
 package com.example.salekb.bakingapp.steps;
 
 
-import android.content.Intent;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,12 +13,14 @@ import android.widget.TextView;
 
 import com.example.salekb.bakingapp.DetailActivity;
 import com.example.salekb.bakingapp.R;
+import com.example.salekb.bakingapp.fragments.DetailStepsFragment;
 
 import java.util.ArrayList;
 
 public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsViewHolder> {
 
     public ArrayList<Steps> steps;
+    private Context context;
 
     public StepsAdapter (ArrayList<Steps> stepsArrayList) {
         this.steps = stepsArrayList;
@@ -37,9 +41,14 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsViewHol
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent detailIntent = new Intent(view.getContext(), DetailActivity.class);
-                detailIntent.putExtra("position", position);
-                view.getContext().startActivity(detailIntent);
+                DetailActivity detailActivity = (DetailActivity)view.getContext();
+                DetailStepsFragment detailStepsFragment = new DetailStepsFragment();
+                detailActivity.getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.detail_fragment_container, detailStepsFragment)
+                        .addToBackStack("Steps_Detail_TAG")
+                        .commit();
+
                 Log.v(StepsAdapter.class.getSimpleName(), "onClicked in OnBindViewHolder");
             }
         });
