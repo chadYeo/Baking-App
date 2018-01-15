@@ -1,9 +1,7 @@
 package com.example.salekb.bakingapp.steps;
 
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
-import android.content.Context;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,7 +18,6 @@ import java.util.ArrayList;
 public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsViewHolder> {
 
     public ArrayList<Steps> steps;
-    private Context context;
 
     public StepsAdapter (ArrayList<Steps> stepsArrayList) {
         this.steps = stepsArrayList;
@@ -48,7 +45,9 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsViewHol
                         .replace(R.id.detail_fragment_container, detailStepsFragment)
                         .addToBackStack("Steps_Detail_TAG")
                         .commit();
-
+                Bundle args = new Bundle();
+                args.putInt("stepsPosition", position);
+                detailStepsFragment.setArguments(args);
                 Log.v(StepsAdapter.class.getSimpleName(), "onClicked in OnBindViewHolder");
             }
         });

@@ -101,7 +101,7 @@ public class DetailViewFragment extends Fragment
         int position = 0;
         if (extras != null) {
             position = extras.getInt("position");
-            Log.v(LOG_TAG, "onCreateLoader with item position: " + position);
+            Log.v(LOG_TAG, "onCreateLoader with detail item position: " + position);
         }
         return new StepsLoader(getContext(), url, position);
     }
