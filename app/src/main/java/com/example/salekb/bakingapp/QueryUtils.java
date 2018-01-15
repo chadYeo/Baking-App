@@ -140,20 +140,6 @@ public class QueryUtils {
         return stepsArrayList;
     }
 
-    public static String fetchStepsDetailData(String requestUrl, int recipePosition, int stepsPosition) {
-        URL url = createUrl(requestUrl);
-        String jsonResponse = "";
-        try {
-            jsonResponse = makeHttpRequest(url);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        String stepsDescription = extractStepDescriptionFromJson(jsonResponse, recipePosition, stepsPosition);
-
-        return stepsDescription;
-    }
-
     private static ArrayList<Recipe> extractRecipeFromJson(String recipeJSON) {
         if (TextUtils.isEmpty(recipeJSON)) {
             return null;
@@ -232,26 +218,5 @@ public class QueryUtils {
             e.printStackTrace();
         }
         return stepsArrayList;
-    }
-
-    private static String extractStepDescriptionFromJson(String stepsJSON, int recipePosition, int stepsPosition) {
-        if (TextUtils.isEmpty(stepsJSON)) {
-            return null;
-        }
-
-        String stepDescription = new String();
-
-        try {
-            JSONArray baseJsonResponses = new JSONArray(stepsJSON);
-            JSONObject currentItem = baseJsonResponses.getJSONObject(recipePosition);
-            JSONArray steps = currentItem.getJSONArray("steps");
-            JSONObject recipeStep = steps.getJSONObject(stepsPosition);
-            String description = recipeStep.getString("description");
-            stepDescription = description;
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return stepDescription;
     }
 }
