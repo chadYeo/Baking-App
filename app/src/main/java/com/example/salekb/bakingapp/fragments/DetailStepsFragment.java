@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.salekb.bakingapp.QueryUtils;
 import com.example.salekb.bakingapp.R;
@@ -36,6 +37,8 @@ public class DetailStepsFragment extends Fragment implements LoaderManager.Loade
     private ImageButton mArrowBackImageButton;
     private ImageButton mArrowForwardImageButton;
     private StepsAdapter mStepsAdapter;
+    private int stepsPosition;
+    private int numberOfSteps;
 
     private static final String url = "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/baking.json";
     private static final String LOG_TAG = DetailStepsFragment.class.getSimpleName();
@@ -48,12 +51,41 @@ public class DetailStepsFragment extends Fragment implements LoaderManager.Loade
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_detail_steps, container, false);
 
+        mStepsAdapter = new StepsAdapter(new ArrayList<Steps>());
+
+        Bundle extras_stepsPosition = this.getArguments();
+        stepsPosition = extras_stepsPosition.getInt("stepsPosition");
+
         mProgressbar = (ProgressBar)view.findViewById(R.id.detail_steps_progressBar);
         mDetailSteps_textView = (TextView)view.findViewById(R.id.detail_steps_textView);
         mArrowBackImageButton = (ImageButton)view.findViewById(R.id.arrow_back_imageButton);
         mArrowForwardImageButton = (ImageButton)view.findViewById(R.id.arrow_forward_imageButton);
 
-        mStepsAdapter = new StepsAdapter(new ArrayList<Steps>());
+        mArrowBackImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (stepsPosition == 0) {
+                    return;
+                } else {
+                    stepsPosition = stepsPosition - 1;
+                    String previousDescription = mStepsAdapter.steps.get(stepsPosition).getDescription();
+                    mDetailSteps_textView.setText(previousDescription);
+                }
+            }
+        });
+
+        mArrowForwardImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (stepsPosition == numberOfSteps - 1) {
+                    return;
+                } else {
+                    stepsPosition = stepsPosition + 1;
+                    String nextDescription = mStepsAdapter.steps.get(stepsPosition).getDescription();
+                    mDetailSteps_textView.setText(nextDescription);
+                }
+            }
+        });
 
         ConnectivityManager cm = (ConnectivityManager)view.getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = cm.getActiveNetworkInfo();
@@ -84,9 +116,7 @@ public class DetailStepsFragment extends Fragment implements LoaderManager.Loade
 
         if (data != null && !data.isEmpty()) {
             mStepsAdapter.steps.addAll(data);
-
-            Bundle extras_stepsPosition = this.getArguments();
-            int stepsPosition = extras_stepsPosition.getInt("stepsPosition");
+            numberOfSteps = data.size();
 
             String description = data.get(stepsPosition).getDescription();
             mDetailSteps_textView.setText(description);
