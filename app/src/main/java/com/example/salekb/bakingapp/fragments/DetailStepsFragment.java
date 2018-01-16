@@ -4,8 +4,11 @@ package com.example.salekb.bakingapp.fragments;
 import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Loader;
+import android.graphics.Bitmap;
+import android.media.MediaMetadataRetriever;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -15,15 +18,16 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.salekb.bakingapp.QueryUtils;
 import com.example.salekb.bakingapp.R;
 import com.example.salekb.bakingapp.steps.Steps;
 import com.example.salekb.bakingapp.steps.StepsAdapter;
 import com.example.salekb.bakingapp.steps.StepsLoader;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -37,6 +41,9 @@ public class DetailStepsFragment extends Fragment implements LoaderManager.Loade
     private ImageButton mArrowBackImageButton;
     private ImageButton mArrowForwardImageButton;
     private StepsAdapter mStepsAdapter;
+    private SimpleExoPlayer mExoPlayer;
+    private SimpleExoPlayerView mPlayerView;
+
     private int stepsPosition;
     private int numberOfSteps;
 
@@ -57,6 +64,7 @@ public class DetailStepsFragment extends Fragment implements LoaderManager.Loade
         stepsPosition = extras_stepsPosition.getInt("stepsPosition");
 
         mProgressbar = (ProgressBar)view.findViewById(R.id.detail_steps_progressBar);
+        mPlayerView = (SimpleExoPlayerView)view.findViewById(R.id.steps_playerView);
         mDetailSteps_textView = (TextView)view.findViewById(R.id.detail_steps_textView);
         mArrowBackImageButton = (ImageButton)view.findViewById(R.id.arrow_back_imageButton);
         mArrowForwardImageButton = (ImageButton)view.findViewById(R.id.arrow_forward_imageButton);
@@ -120,6 +128,9 @@ public class DetailStepsFragment extends Fragment implements LoaderManager.Loade
 
             String description = data.get(stepsPosition).getDescription();
             mDetailSteps_textView.setText(description);
+
+            String videoURL = data.get(stepsPosition).getVideoURL();
+            mPlayerView.setDefaultArtwork(retrieveVideoFrameFromVideo(videoURL));
         }
     }
 
@@ -127,5 +138,26 @@ public class DetailStepsFragment extends Fragment implements LoaderManager.Loade
     public void onLoaderReset(Loader<List<Steps>> loader) {
         loader.reset();
         Log.v(LOG_TAG, "onLoaderReset is initiated");
+    }
+
+    public static Bitmap retrieveVideoFrameFromVideo(String videoPath) {
+        Bitmap bitmap = null;
+        MediaMetadataRetriever mediaMetadataRetriever = null;
+        try {
+            mediaMetadataRetriever = new MediaMetadataRetriever();
+            if (Build.VERSION.SDK_INT >= 14) {
+                mediaMetadataRetriever.setDataSource(videoPath, new HashMap<String, String>());
+            } else {
+                mediaMetadataRetriever.setDataSource(videoPath);
+            }
+            bitmap = mediaMetadataRetriever.getFrameAtTime(1000);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (mediaMetadataRetriever != null) {
+                mediaMetadataRetriever.release();
+            }
+        }
+        return bitmap;
     }
 }
