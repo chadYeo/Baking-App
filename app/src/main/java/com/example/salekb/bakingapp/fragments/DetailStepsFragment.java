@@ -4,6 +4,7 @@ package com.example.salekb.bakingapp.fragments;
 import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Loader;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -76,6 +77,8 @@ public class DetailStepsFragment extends Fragment implements LoaderManager.Loade
         mArrowBackImageButton = (ImageButton)view.findViewById(R.id.arrow_back_imageButton);
         mArrowForwardImageButton = (ImageButton)view.findViewById(R.id.arrow_forward_imageButton);
 
+        mPlayerView.setDefaultArtwork(BitmapFactory.decodeResource(getResources(), R.drawable.image_no_video));
+
         mArrowBackImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -90,6 +93,12 @@ public class DetailStepsFragment extends Fragment implements LoaderManager.Loade
                     releasePlayer();
                     String previousVideoURL = mStepsAdapter.steps.get(stepsPosition).getVideoURL();
                     initializePlayer(Uri.parse(previousVideoURL));
+
+                    if (previousVideoURL == "" || previousVideoURL == null) {
+                        return;
+                    } else {
+                        initializePlayer(Uri.parse(previousVideoURL));
+                    }
                 }
             }
         });
@@ -108,6 +117,12 @@ public class DetailStepsFragment extends Fragment implements LoaderManager.Loade
                     releasePlayer();
                     String nextVideoURL = mStepsAdapter.steps.get(stepsPosition).getVideoURL();
                     initializePlayer(Uri.parse(nextVideoURL));
+
+                    if (nextVideoURL == "" || nextVideoURL == null) {
+                        return;
+                    } else {
+                        initializePlayer(Uri.parse(nextVideoURL));
+                    }
                 }
             }
         });
@@ -153,7 +168,11 @@ public class DetailStepsFragment extends Fragment implements LoaderManager.Loade
             mDetailSteps_textView.setText(description);
 
             String videoURL = data.get(stepsPosition).getVideoURL();
-            initializePlayer(Uri.parse(videoURL));
+            if (videoURL == "" || videoURL == null) {
+                return;
+            } else {
+                initializePlayer(Uri.parse(videoURL));
+            }
         }
     }
 
