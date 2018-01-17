@@ -4,11 +4,9 @@ package com.example.salekb.bakingapp.fragments;
 import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Loader;
-import android.graphics.Bitmap;
-import android.media.MediaMetadataRetriever;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Build;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -23,11 +21,20 @@ import com.example.salekb.bakingapp.R;
 import com.example.salekb.bakingapp.steps.Steps;
 import com.example.salekb.bakingapp.steps.StepsAdapter;
 import com.example.salekb.bakingapp.steps.StepsLoader;
+import com.google.android.exoplayer2.DefaultLoadControl;
+import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.LoadControl;
 import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
+import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.util.Util;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -111,6 +118,12 @@ public class DetailStepsFragment extends Fragment implements LoaderManager.Loade
     }
 
     @Override
+    public void onDestroy() {
+        super.onDestroy();
+        releasePlayer();
+    }
+
+    @Override
     public Loader<List<Steps>> onCreateLoader(int i, Bundle bundle) {
         Bundle extras_recipe = getActivity().getIntent().getExtras();
         int recipePosition = extras_recipe.getInt("position");
@@ -130,7 +143,7 @@ public class DetailStepsFragment extends Fragment implements LoaderManager.Loade
             mDetailSteps_textView.setText(description);
 
             String videoURL = data.get(stepsPosition).getVideoURL();
-            mPlayerView.setDefaultArtwork(retrieveVideoFrameFromVideo(videoURL));
+            initializePlayer(Uri.parse(videoURL));
         }
     }
 
@@ -140,24 +153,31 @@ public class DetailStepsFragment extends Fragment implements LoaderManager.Loade
         Log.v(LOG_TAG, "onLoaderReset is initiated");
     }
 
-    public static Bitmap retrieveVideoFrameFromVideo(String videoPath) {
-        Bitmap bitmap = null;
-        MediaMetadataRetriever mediaMetadataRetriever = null;
-        try {
-            mediaMetadataRetriever = new MediaMetadataRetriever();
-            if (Build.VERSION.SDK_INT >= 14) {
-                mediaMetadataRetriever.setDataSource(videoPath, new HashMap<String, String>());
-            } else {
-                mediaMetadataRetriever.setDataSource(videoPath);
-            }
-            bitmap = mediaMetadataRetriever.getFrameAtTime(1000);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (mediaMetadataRetriever != null) {
-                mediaMetadataRetriever.release();
-            }
+    /**
+     * Initialize ExoPlayer
+     */
+    private void initializePlayer(Uri mediaUri) {
+        if (mExoPlayer == null) {
+            // Create an instance of the ExoPlayer
+            TrackSelector trackSelector = new DefaultTrackSelector();
+            LoadControl loadControl = new DefaultLoadControl();
+            mExoPlayer = ExoPlayerFactory.newSimpleInstance(getContext(), trackSelector, loadControl);
+            mPlayerView.setPlayer(mExoPlayer);
+            // Prepare the MediaSource
+            String userAgent = Util.getUserAgent(getContext(), "BakingApp");
+            MediaSource mediaSource = new ExtractorMediaSource(mediaUri, new DefaultDataSourceFactory(
+                    getContext(), userAgent), new DefaultExtractorsFactory(), null, null);
+            mExoPlayer.prepare(mediaSource);
+            mExoPlayer.setPlayWhenReady(true);
         }
-        return bitmap;
+    }
+
+    /**
+     * Release ExoPlayer
+     */
+    private void releasePlayer() {
+        mExoPlayer.stop();
+        mExoPlayer.release();
+        mExoPlayer = null;
     }
 }
