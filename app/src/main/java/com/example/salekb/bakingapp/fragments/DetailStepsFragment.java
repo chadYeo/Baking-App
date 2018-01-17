@@ -83,8 +83,13 @@ public class DetailStepsFragment extends Fragment implements LoaderManager.Loade
                     return;
                 } else {
                     stepsPosition = stepsPosition - 1;
+
                     String previousDescription = mStepsAdapter.steps.get(stepsPosition).getDescription();
                     mDetailSteps_textView.setText(previousDescription);
+
+                    releasePlayer();
+                    String previousVideoURL = mStepsAdapter.steps.get(stepsPosition).getVideoURL();
+                    initializePlayer(Uri.parse(previousVideoURL));
                 }
             }
         });
@@ -96,8 +101,13 @@ public class DetailStepsFragment extends Fragment implements LoaderManager.Loade
                     return;
                 } else {
                     stepsPosition = stepsPosition + 1;
+
                     String nextDescription = mStepsAdapter.steps.get(stepsPosition).getDescription();
                     mDetailSteps_textView.setText(nextDescription);
+
+                    releasePlayer();
+                    String nextVideoURL = mStepsAdapter.steps.get(stepsPosition).getVideoURL();
+                    initializePlayer(Uri.parse(nextVideoURL));
                 }
             }
         });
