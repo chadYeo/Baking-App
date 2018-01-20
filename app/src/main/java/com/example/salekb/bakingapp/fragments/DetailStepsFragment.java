@@ -174,7 +174,9 @@ public class DetailStepsFragment extends Fragment implements LoaderManager.Loade
     @Override
     public void onDestroy() {
         super.onDestroy();
-        releasePlayer();
+        if (!mStepsAdapter.steps.get(stepsPosition).getVideoURL().isEmpty()) {
+            releasePlayer();
+        }
     }
 
 
