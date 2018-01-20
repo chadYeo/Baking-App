@@ -1,5 +1,6 @@
 package com.example.salekb.bakingapp;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -10,6 +11,7 @@ import com.example.salekb.bakingapp.fragments.DetailViewFragment;
 
 public class DetailActivity extends AppCompatActivity {
 
+    private Dialog mFullScreenDialog;
     private int itemPosition;
 
     @Override

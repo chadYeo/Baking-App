@@ -1,22 +1,31 @@
 package com.example.salekb.bakingapp.fragments;
 
 
+import android.app.Dialog;
 import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Loader;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.salekb.bakingapp.R;
 import com.example.salekb.bakingapp.steps.Steps;
@@ -49,9 +58,14 @@ public class DetailStepsFragment extends Fragment implements LoaderManager.Loade
     private ImageButton mArrowBackImageButton;
     private ImageButton mArrowForwardImageButton;
     private StepsAdapter mStepsAdapter;
+    private FrameLayout mExoMediaFrame;
     private SimpleExoPlayer mExoPlayer;
-    private SimpleExoPlayerView mPlayerView;
+    private SimpleExoPlayerView mSimpleExoPlayerView;
+    private FrameLayout mExoFullScreenButton;
+    private ImageView mExoFullScreenIcon;
+    private Dialog mFullScreenDialog;
 
+    private boolean mIsExoPlayerFullscreen;
     private int stepsPosition;
     private int numberOfSteps;
 
@@ -72,12 +86,26 @@ public class DetailStepsFragment extends Fragment implements LoaderManager.Loade
         stepsPosition = extras_stepsPosition.getInt("stepsPosition");
 
         mProgressbar = (ProgressBar)view.findViewById(R.id.detail_steps_progressBar);
-        mPlayerView = (SimpleExoPlayerView)view.findViewById(R.id.steps_playerView);
+        mExoMediaFrame = (FrameLayout)view.findViewById(R.id.main_media_frame);
+        mSimpleExoPlayerView = (SimpleExoPlayerView)view.findViewById(R.id.steps_playerView);
+        mExoFullScreenButton = (FrameLayout)view.findViewById(R.id.exo_fullscreen_button);
+        mExoFullScreenIcon = (ImageView)view.findViewById(R.id.exo_fullscreen_icon);
         mDetailSteps_textView = (TextView)view.findViewById(R.id.detail_steps_textView);
         mArrowBackImageButton = (ImageButton)view.findViewById(R.id.arrow_back_imageButton);
         mArrowForwardImageButton = (ImageButton)view.findViewById(R.id.arrow_forward_imageButton);
 
-        mPlayerView.setDefaultArtwork(BitmapFactory.decodeResource(getResources(), R.drawable.image_no_video));
+        mFullScreenDialog = new Dialog(getContext(), android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+
+        mExoFullScreenButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!mIsExoPlayerFullscreen) {
+                    openFullscreenDialog();
+                } else {
+                    closeFullscreenDialog();
+                }
+            }
+        });
 
         mArrowBackImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,14 +118,12 @@ public class DetailStepsFragment extends Fragment implements LoaderManager.Loade
                     String previousDescription = mStepsAdapter.steps.get(stepsPosition).getDescription();
                     mDetailSteps_textView.setText(previousDescription);
 
-                    releasePlayer();
                     String previousVideoURL = mStepsAdapter.steps.get(stepsPosition).getVideoURL();
+                    releasePlayer();
                     initializePlayer(Uri.parse(previousVideoURL));
-
-                    if (previousVideoURL == "" || previousVideoURL == null) {
-                        return;
-                    } else {
-                        initializePlayer(Uri.parse(previousVideoURL));
+                    if (previousVideoURL.isEmpty()) {
+                        mSimpleExoPlayerView.hideController();
+                        mSimpleExoPlayerView.setDefaultArtwork(BitmapFactory.decodeResource(getResources(), R.drawable.image_no_video));
                     }
                 }
             }
@@ -114,14 +140,12 @@ public class DetailStepsFragment extends Fragment implements LoaderManager.Loade
                     String nextDescription = mStepsAdapter.steps.get(stepsPosition).getDescription();
                     mDetailSteps_textView.setText(nextDescription);
 
-                    releasePlayer();
                     String nextVideoURL = mStepsAdapter.steps.get(stepsPosition).getVideoURL();
+                    releasePlayer();
                     initializePlayer(Uri.parse(nextVideoURL));
-
-                    if (nextVideoURL == "" || nextVideoURL == null) {
-                        return;
-                    } else {
-                        initializePlayer(Uri.parse(nextVideoURL));
+                    if (nextVideoURL.isEmpty()) {
+                        mSimpleExoPlayerView.hideController();
+                        mSimpleExoPlayerView.setDefaultArtwork(BitmapFactory.decodeResource(getResources(), R.drawable.image_no_video));
                     }
                 }
             }
@@ -143,10 +167,16 @@ public class DetailStepsFragment extends Fragment implements LoaderManager.Loade
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         releasePlayer();
     }
+
 
     @Override
     public Loader<List<Steps>> onCreateLoader(int i, Bundle bundle) {
@@ -168,8 +198,9 @@ public class DetailStepsFragment extends Fragment implements LoaderManager.Loade
             mDetailSteps_textView.setText(description);
 
             String videoURL = data.get(stepsPosition).getVideoURL();
-            if (videoURL == "" || videoURL == null) {
-                return;
+            if (videoURL.isEmpty()) {
+                mSimpleExoPlayerView.hideController();
+                mSimpleExoPlayerView.setDefaultArtwork(BitmapFactory.decodeResource(getResources(), R.drawable.image_no_video));
             } else {
                 initializePlayer(Uri.parse(videoURL));
             }
@@ -191,7 +222,7 @@ public class DetailStepsFragment extends Fragment implements LoaderManager.Loade
             TrackSelector trackSelector = new DefaultTrackSelector();
             LoadControl loadControl = new DefaultLoadControl();
             mExoPlayer = ExoPlayerFactory.newSimpleInstance(getContext(), trackSelector, loadControl);
-            mPlayerView.setPlayer(mExoPlayer);
+            mSimpleExoPlayerView.setPlayer(mExoPlayer);
             // Prepare the MediaSource
             String userAgent = Util.getUserAgent(getContext(), "BakingApp");
             MediaSource mediaSource = new ExtractorMediaSource(mediaUri, new DefaultDataSourceFactory(
@@ -208,5 +239,22 @@ public class DetailStepsFragment extends Fragment implements LoaderManager.Loade
         mExoPlayer.stop();
         mExoPlayer.release();
         mExoPlayer = null;
+    }
+
+    private void closeFullscreenDialog() {
+        ((ViewGroup) mSimpleExoPlayerView.getParent()).removeView(mSimpleExoPlayerView);
+        mExoMediaFrame.addView(mSimpleExoPlayerView);
+        mIsExoPlayerFullscreen = false;
+        mFullScreenDialog.dismiss();
+        mExoFullScreenIcon.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_fullscreen_expand));
+    }
+
+    private void openFullscreenDialog() {
+        ((ViewGroup)mSimpleExoPlayerView.getParent()).removeView(mSimpleExoPlayerView);
+        mFullScreenDialog.addContentView(mSimpleExoPlayerView,
+                new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        mExoFullScreenIcon.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_fullscreen_shrink));
+        mIsExoPlayerFullscreen = true;
+        mFullScreenDialog.show();
     }
 }

@@ -1,20 +1,28 @@
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.example.salekb.bakingapp.fragments.DetailStepsFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="8dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.example.salekb.bakingapp.fragments.DetailStepsFragment">
+    android:padding="8dp">
 
-    <com.google.android.exoplayer2.ui.SimpleExoPlayerView
-        android:id="@+id/steps_playerView"
+    <FrameLayout
+        android:id="@+id/main_media_frame"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:background="#000000"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/horizontalHalf" />
+        app:layout_constraintBottom_toTopOf="@id/horizontalHalf">
+
+        <com.google.android.exoplayer2.ui.SimpleExoPlayerView
+            android:id="@+id/steps_playerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
 
     <android.support.constraint.Guideline
         android:id="@+id/horizontalHalf"
@@ -39,7 +47,7 @@
         android:id="@+id/detail_steps_textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/steps_playerView"
+        app:layout_constraintTop_toBottomOf="@id/main_media_frame"
         android:gravity="center_horizontal"
         android:textColor="@android:color/black"
         android:text="Recipe step instruction" />
