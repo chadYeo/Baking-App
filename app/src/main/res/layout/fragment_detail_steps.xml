@@ -17,6 +17,13 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toTopOf="@id/horizontalHalf">
 
+        <ImageView
+            android:id="@+id/image_no_video_imageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            android:src="@drawable/image_no_video"/>
+
         <com.google.android.exoplayer2.ui.SimpleExoPlayerView
             android:id="@+id/steps_playerView"
             android:layout_width="match_parent"

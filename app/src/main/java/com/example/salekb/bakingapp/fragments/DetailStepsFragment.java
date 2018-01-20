@@ -54,6 +54,7 @@ public class DetailStepsFragment extends Fragment implements LoaderManager.Loade
 
     private static final int DETAIL_STEP_LOADER_ID = 4845;
     private ProgressBar mProgressbar;
+    private ImageView mNoVideoImageView;
     private TextView mDetailSteps_textView;
     private ImageButton mArrowBackImageButton;
     private ImageButton mArrowForwardImageButton;
@@ -86,6 +87,7 @@ public class DetailStepsFragment extends Fragment implements LoaderManager.Loade
         stepsPosition = extras_stepsPosition.getInt("stepsPosition");
 
         mProgressbar = (ProgressBar)view.findViewById(R.id.detail_steps_progressBar);
+        mNoVideoImageView = (ImageView)view.findViewById(R.id.image_no_video_imageView);
         mExoMediaFrame = (FrameLayout)view.findViewById(R.id.main_media_frame);
         mSimpleExoPlayerView = (SimpleExoPlayerView)view.findViewById(R.id.steps_playerView);
         mExoFullScreenButton = (FrameLayout)view.findViewById(R.id.exo_fullscreen_button);
@@ -201,11 +203,10 @@ public class DetailStepsFragment extends Fragment implements LoaderManager.Loade
 
             String videoURL = data.get(stepsPosition).getVideoURL();
             if (videoURL.isEmpty()) {
-                mSimpleExoPlayerView.hideController();
                 mSimpleExoPlayerView.setDefaultArtwork(BitmapFactory.decodeResource(getResources(), R.drawable.image_no_video));
-            } else {
-                initializePlayer(Uri.parse(videoURL));
+                mSimpleExoPlayerView.hideController();
             }
+            initializePlayer(Uri.parse(videoURL));
         }
     }
 
