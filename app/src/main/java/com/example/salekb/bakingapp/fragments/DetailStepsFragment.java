@@ -3,7 +3,10 @@ package com.example.salekb.bakingapp.fragments;
 
 import android.app.Dialog;
 import android.app.LoaderManager;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.Loader;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
@@ -11,7 +14,9 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.media.session.MediaButtonReceiver;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
@@ -70,6 +75,7 @@ public class DetailStepsFragment extends Fragment
     private Dialog mFullScreenDialog;
     private MediaSessionCompat mMediaSession;
     private PlaybackStateCompat.Builder mStateBuilder;
+    private NotificationManager mNotificationManager;
 
     private boolean mIsExoPlayerFullscreen;
     private int stepsPosition;
@@ -275,6 +281,7 @@ public class DetailStepsFragment extends Fragment
      * Release ExoPlayer
      */
     private void releasePlayer() {
+        mNotificationManager.cancelAll();
         mExoPlayer.stop();
         mExoPlayer.release();
         mExoPlayer = null;
@@ -323,6 +330,8 @@ public class DetailStepsFragment extends Fragment
                     mExoPlayer.getCurrentPosition(), 1f);
         }
         mMediaSession.setPlaybackState(mStateBuilder.build());
+
+        showNotification(mStateBuilder.build());
     }
 
     @Override
@@ -353,5 +362,42 @@ public class DetailStepsFragment extends Fragment
         public void onSkipToPrevious() {
             mExoPlayer.seekTo(0);
         }
+    }
+
+    private void showNotification(PlaybackStateCompat state) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext());
+
+        int icon;
+        String play_pause;
+        if (state.getState() == PlaybackStateCompat.STATE_PLAYING) {
+            icon = R.drawable.exo_controls_pause;
+            play_pause = getString(R.string.pause);
+        } else {
+            icon = R.drawable.exo_controls_play;
+            play_pause = getString(R.string.play);
+        }
+
+        NotificationCompat.Action playPauseAction = new NotificationCompat.Action(
+                icon, play_pause, MediaButtonReceiver.buildMediaButtonPendingIntent(getContext(),
+                PlaybackStateCompat.ACTION_PLAY_PAUSE));
+
+        NotificationCompat.Action restartAction = new NotificationCompat.Action(
+                R.drawable.exo_controls_previous, getString(R.string.restart),
+                MediaButtonReceiver.buildMediaButtonPendingIntent(
+                        getContext(), PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS));
+
+        PendingIntent contentPendingIntent = PendingIntent.getActivity(getContext(), 0,
+                new Intent(getContext(), DetailStepsFragment.class), 0);
+
+        builder.setContentTitle(getString(R.string.app_name))
+                .setContentText(getString(R.string.notification_text))
+                .setContentIntent(contentPendingIntent)
+                .setSmallIcon(R.drawable.ic_music_note)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                .addAction(restartAction)
+                .addAction(playPauseAction);
+
+        mNotificationManager = (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(0, builder.build());
     }
 }
