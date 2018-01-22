@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.LoaderManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
@@ -73,7 +74,7 @@ public class DetailStepsFragment extends Fragment
     private FrameLayout mExoFullScreenButton;
     private ImageView mExoFullScreenIcon;
     private Dialog mFullScreenDialog;
-    private MediaSessionCompat mMediaSession;
+    private static MediaSessionCompat mMediaSession;
     private PlaybackStateCompat.Builder mStateBuilder;
     private NotificationManager mNotificationManager;
 
@@ -399,5 +400,16 @@ public class DetailStepsFragment extends Fragment
 
         mNotificationManager = (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(0, builder.build());
+    }
+
+    public static class MediaReceiver extends BroadcastReceiver {
+
+        public MediaReceiver() {
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            MediaButtonReceiver.handleIntent(mMediaSession, intent);
+        }
     }
 }
