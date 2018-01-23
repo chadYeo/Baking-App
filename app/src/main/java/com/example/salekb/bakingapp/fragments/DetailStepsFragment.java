@@ -3,6 +3,7 @@ package com.example.salekb.bakingapp.fragments;
 
 import android.app.Dialog;
 import android.app.LoaderManager;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -10,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.Loader;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -84,6 +86,7 @@ public class DetailStepsFragment extends Fragment
 
     private static final String url = "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/baking.json";
     private static final String TAG = DetailStepsFragment.class.getSimpleName();
+    private static final String NOTIFICATION_CHANNEL_ID = "my_notification_channel";
 
     public DetailStepsFragment() {
     }
@@ -366,7 +369,7 @@ public class DetailStepsFragment extends Fragment
     }
 
     private void showNotification(PlaybackStateCompat state) {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext());
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(), NOTIFICATION_CHANNEL_ID);
 
         int icon;
         String play_pause;
@@ -399,6 +402,16 @@ public class DetailStepsFragment extends Fragment
                 .addAction(playPauseAction);
 
         mNotificationManager = (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationChannel notificationChannel = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            notificationChannel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "Video Notifications", NotificationManager.IMPORTANCE_DEFAULT);
+            notificationChannel.setDescription("Play to hear the steps");
+            notificationChannel.enableLights(true);
+            notificationChannel.setLightColor(Color.RED);
+            notificationChannel.enableVibration(true);
+            mNotificationManager.createNotificationChannel(notificationChannel);
+        }
+
         mNotificationManager.notify(0, builder.build());
     }
 
