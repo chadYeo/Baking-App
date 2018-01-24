@@ -32,12 +32,13 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsViewHol
 
     @Override
     public void onBindViewHolder(StepsViewHolder holder, final int position) {
-        final String step = steps.get(position).getShortDescription();
 
+        final String step = steps.get(position).getShortDescription();
         holder.mStepsTextView.setText(step);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 DetailActivity detailActivity = (DetailActivity)view.getContext();
                 DetailStepsFragment detailStepsFragment = new DetailStepsFragment();
                 detailActivity.getSupportFragmentManager()

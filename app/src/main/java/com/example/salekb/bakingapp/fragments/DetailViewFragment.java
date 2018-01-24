@@ -4,6 +4,7 @@ package com.example.salekb.bakingapp.fragments;
 import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Loader;
+import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -12,14 +13,18 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.salekb.bakingapp.DetailActivity;
 import com.example.salekb.bakingapp.R;
 import com.example.salekb.bakingapp.steps.Steps;
 import com.example.salekb.bakingapp.steps.StepsAdapter;
@@ -40,6 +45,7 @@ public class DetailViewFragment extends Fragment
     private TextView mEmptyTextView;
     private RecyclerView mStepsRecyclerView;
     private StepsAdapter mStepsAdapter;
+    private boolean mTwoPane;
 
     private static final String url = "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/baking.json";
     private static final String LOG_TAG = DetailViewFragment.class.getSimpleName();
@@ -49,7 +55,7 @@ public class DetailViewFragment extends Fragment
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             final Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_detail_view, container, false);
 
         mProgressbar = (ProgressBar) view.findViewById(R.id.detail_progressBar);
@@ -61,17 +67,29 @@ public class DetailViewFragment extends Fragment
         mStepsAdapter = new StepsAdapter(new ArrayList<Steps>());
         mStepsRecyclerView.setAdapter(mStepsAdapter);
 
+        mTwoPane = getArguments().getBoolean("mTwoPane");
+
         mRecipeIngredientsButton = (Button) view.findViewById(R.id.recipe_ingredients_button);
 
         mRecipeIngredientsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FragmentManager fragmentManager = getFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                DetailIngredientsFragment detailIngredientsFragment = new DetailIngredientsFragment();
-                fragmentTransaction.replace(R.id.detail_fragment_container, detailIngredientsFragment);
-                fragmentTransaction.addToBackStack("Ingredient_Detail_TAG");
-                fragmentTransaction.commit();
+                if (mTwoPane) {
+                    FragmentManager fragmentManager = getFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    DetailIngredientsFragment detailIngredientsFragment = new DetailIngredientsFragment();
+
+                    fragmentTransaction.replace(R.id.detail_largeScreen_fragment_container, detailIngredientsFragment);
+                    fragmentTransaction.commit();
+                } else {
+                    FragmentManager fragmentManager = getFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    DetailIngredientsFragment detailIngredientsFragment = new DetailIngredientsFragment();
+
+                    fragmentTransaction.replace(R.id.detail_fragment_container, detailIngredientsFragment);
+                    fragmentTransaction.addToBackStack("Ingredient_Detail_TAG");
+                    fragmentTransaction.commit();
+                }
             }
         });
 
