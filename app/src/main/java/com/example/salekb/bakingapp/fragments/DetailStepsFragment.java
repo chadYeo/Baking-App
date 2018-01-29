@@ -83,6 +83,7 @@ public class DetailStepsFragment extends Fragment
     private boolean mIsExoPlayerFullscreen;
     private int stepsPosition;
     private int numberOfSteps;
+    private boolean twoPane;
 
     private static final String url = "https://d17h27t6h515a5.cloudfront.net/topher/2017/May/59121517_baking/baking.json";
     private static final String TAG = DetailStepsFragment.class.getSimpleName();
@@ -100,6 +101,7 @@ public class DetailStepsFragment extends Fragment
 
         Bundle extras_stepsPosition = this.getArguments();
         stepsPosition = extras_stepsPosition.getInt("stepsPosition");
+        twoPane = extras_stepsPosition.getBoolean("twoPane");
 
         mProgressbar = (ProgressBar)view.findViewById(R.id.detail_steps_progressBar);
         mNoVideoImageView = (ImageView)view.findViewById(R.id.image_no_video_imageView);
@@ -123,6 +125,11 @@ public class DetailStepsFragment extends Fragment
                 }
             }
         });
+
+        if (twoPane) {
+            mArrowBackImageButton.setVisibility(View.GONE);
+            mArrowForwardImageButton.setVisibility(View.GONE);
+        }
 
         mArrowBackImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -183,6 +190,8 @@ public class DetailStepsFragment extends Fragment
 
         return view;
     }
+
+
 
     /**
       * Initializes the Media Session to be enabled with media buttons, transport controls, callbacks

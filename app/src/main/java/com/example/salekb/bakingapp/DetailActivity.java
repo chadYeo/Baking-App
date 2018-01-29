@@ -4,11 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.DisplayMetrics;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
 
 import com.example.salekb.bakingapp.fragments.DetailIngredientsFragment;
 import com.example.salekb.bakingapp.fragments.DetailStepsFragment;
@@ -20,8 +16,10 @@ public class DetailActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            selectPopBackStackDetailTag();
+        if (item.getItemId() == android.R.id.home && !mTwoPane) {
+                selectPopBackStackDetailTag();
+        } else if (item.getItemId() == android.R.id.home && mTwoPane) {
+            super.onBackPressed();
         }
         return true;
     }
@@ -34,6 +32,7 @@ public class DetailActivity extends AppCompatActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         DetailViewFragment detailViewFragment = new DetailViewFragment();
+        DetailStepsFragment detailStepsFragment = new DetailStepsFragment();
         DetailIngredientsFragment detailIngredientsFragment = new DetailIngredientsFragment();
 
         Bundle bundle = new Bundle();
@@ -51,6 +50,7 @@ public class DetailActivity extends AppCompatActivity {
             fragmentTransaction.commit();
         }
         detailViewFragment.setArguments(bundle);
+        detailStepsFragment.setArguments(bundle);
     }
 
     @Override
@@ -66,5 +66,9 @@ public class DetailActivity extends AppCompatActivity {
         } else {
             super.onBackPressed();
         }
+    }
+
+    public boolean isTwoPane() {
+        return mTwoPane;
     }
 }
