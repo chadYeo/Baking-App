@@ -1,5 +1,6 @@
 package com.example.salekb.bakingapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -16,12 +17,26 @@ public class DetailActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home && !mTwoPane) {
+
+        if (item.getItemId() == android.R.id.home) {
+            if (!mTwoPane) {
                 selectPopBackStackDetailTag();
-        } else if (item.getItemId() == android.R.id.home && mTwoPane) {
-            super.onBackPressed();
+                return true;
+            } else if (mTwoPane) {
+                startActivity(new Intent(this, MainActivity.class));
+                return true;
+            }
         }
-        return true;
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!mTwoPane) {
+            selectPopBackStackDetailTag();
+        } else if (mTwoPane) {
+            startActivity(new Intent(this, MainActivity.class));
+        }
     }
 
     @Override
@@ -51,11 +66,6 @@ public class DetailActivity extends AppCompatActivity {
         }
         detailViewFragment.setArguments(bundle);
         detailStepsFragment.setArguments(bundle);
-    }
-
-    @Override
-    public void onBackPressed() {
-        selectPopBackStackDetailTag();
     }
 
     private void selectPopBackStackDetailTag() {

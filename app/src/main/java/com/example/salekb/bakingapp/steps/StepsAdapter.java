@@ -21,7 +21,6 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsViewHol
 
     public ArrayList<Steps> steps;
     private boolean twoPane;
-    private RecyclerView.ViewHolder lastModifiedHolded = null;
 
     public StepsAdapter (ArrayList<Steps> stepsArrayList) {
         this.steps = stepsArrayList;
@@ -46,17 +45,8 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsViewHol
                 DetailStepsFragment detailStepsFragment = new DetailStepsFragment();
                 twoPane = detailActivity.isTwoPane();
                 if (twoPane) {
-                    // Reset last modified
-                    if (lastModifiedHolded != null) {
-                        int lastPosition = lastModifiedHolded.getAdapterPosition();
-                        lastModifiedHolded.itemView.setSelected(false);
-                        notifyItemChanged(lastPosition);
-                        Log.v(LOG_TAG, "Last Item Position: " + lastPosition);
-                    }
                     view.setSelected(true);
                     notifyItemChanged(position);
-                    lastModifiedHolded = holder;
-
                     Log.v(LOG_TAG, "Current Item background: " + view.getBackground().toString());
 
                     detailActivity.getSupportFragmentManager()
@@ -71,7 +61,6 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsViewHol
                             .addToBackStack("Steps_Detail_TAG")
                             .commit();
                 }
-
                 Bundle args = new Bundle();
                 args.putInt("stepsPosition", position);
                 args.putBoolean("twoPane", twoPane);
