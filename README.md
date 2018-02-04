@@ -22,5 +22,9 @@ One of the skills I demonstrated in this project is how to handle unexpected inp
     </ul>
   
   <h3>Source:</h3>
-  <p> ProviGen (https://github.com/TimotheeJeannin/ProviGen): Easily make a ContentProvider from a ContractClass</p>
+    <ul>
+      <li>ProviGen (https://github.com/TimotheeJeannin/ProviGen): Easily make a ContentProvider from a ContractClass</li>
+      <li>KGJSonConverter (https://github.com/kosalgeek/KGJsonConverter): This is a library for Android to convert/parse JSON Text into a List/ArrayList of a Generic Class</li>
+      <li>Generic AsyncTask (https://github.com/kosalgeek/generic_asynctask): This is a custom Android generic AsyncTask class that performs a POST call from Android App to Web Server and get the response's result back</li>
+    </ul>
 </body>
